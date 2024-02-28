@@ -13,10 +13,9 @@ def filter_packets(interface):
 
     camera_detected = False
 
-    # Set a start time
+    
     start_time = time.time()
 
-    # Set the duration to 1 minute and 45 seconds
     duration = 105
 
     while (time.time() - start_time) < duration:
