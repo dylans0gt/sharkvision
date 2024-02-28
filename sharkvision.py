@@ -3,7 +3,7 @@ import pyfiglet
 import time
 
 
-banner = pyfiglet.figlet_format("SharkVision", font="alligator")
+banner = pyfiglet.figlet_format("SharkVision", font="Ivrit")
 print(banner)
 
 
