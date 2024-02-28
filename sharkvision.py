@@ -9,7 +9,7 @@ def filter_packets(interface):
     capture = pyshark.LiveCapture(interface=interface)
     print("Capturing packets on interface {}...".format(interface))
 
-    camera_detected = False  # Flag to track if any potential camera is detected
+    camera_detected = False 
 
     for packet in capture.sniff_continuously():
         if 'wlan_mgt' in packet and 'wlan' in packet:
@@ -24,7 +24,7 @@ def filter_packets(interface):
                             print()
                             camera_detected = True
 
-    if not camera_detected:  # If no cameras detected, print the message
+    if not camera_detected:  
         print("No cameras found, you're safe :p")
 
 def main():
@@ -33,10 +33,39 @@ def main():
         "ACCC8E": "Axis Communications AB",
         "002128": "Cisco",
         "001C73": "Arista Networks",
-        # Add more camera OUIs here
+        "001987": "Panasonic Mobile Communications Co.,Ltd.",
+        "000463": "Bosch Security Systems",
+        "000131": "Bosch Security Systems, Inc.",
+        "1868CB": "Hangzhou Hikvision Digital Technology Co.,Ltd.",
+        "1012FB": "Hangzhou Hikvision Digital Technology Co.,Ltd.",
+        "0002D1": "Vivotek",
+        "48EA63": "Uniview",
+        "001C27": "Wbox",
+        "001C27": "Sunell",
+        "00047D": "Pelco",
+        "0003C5": "Mobotix",
+        "0010BE": "March Networks I",
+        "001281": "March Networks II",
+        "000A13": "Honeywell",
+        "0013E2": "Geovision",
+        "001A07": "Arecont",
+        "E43022": "Samsung Techwin I",
+        "000918": "Samsung Techwin II",
+        "00407F": "FLIR I",
+        "001BD8": "FLIR II",
+        "14A78B": "Dahua I",
+        "38AF29": "Dahua II",
+        "3CEF8C": "Dahua III",
+        "4C11BF": "Dahua IV",
+        "9002A9": "Dahua V",
+        "BC325F": "Dahua VI",
+        "E0508B": "Dahua VII",
+        "AC9B0A": "Sony I",
+        "AC9B0A": "Sony II",
+        "00014A": "Sony III"
     }
 
-    interface = 'en0'  # Capture only on interface en0
+    interface = 'en0'  # captures on en0 - wifi
     filter_packets(interface)
 
 if __name__ == "__main__":
