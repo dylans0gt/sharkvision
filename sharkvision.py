@@ -1,31 +1,51 @@
 import pyshark
 import pyfiglet
+import time
 
 
-banner = pyfiglet.figlet_format("SharkVision", font = "alligator" ) 
-print(banner) 
+banner = pyfiglet.figlet_format("SharkVision", font="alligator")
+print(banner)
+
 
 def filter_packets(interface):
     capture = pyshark.LiveCapture(interface=interface)
     print("Capturing packets on interface {}...".format(interface))
 
-    camera_detected = False 
+    camera_detected = False
 
-    for packet in capture.sniff_continuously():
-        if 'wlan_mgt' in packet and 'wlan' in packet:
-            if hasattr(packet.wlan, 'tagged_parameters') and hasattr(packet.wlan_mgt, 'tagged_parameters'):
-                if packet.wlan_mgt.tagged_parameters:
-                    for param in packet.wlan_mgt.tagged_parameters.split():
-                        if param.startswith('OUI:') and param.split(':')[1].upper() in camera_OUIs:
-                            print("ALERT: Potential camera detected!")
-                            print(f"Name: {camera_OUIs[param.split(':')[1].upper()]}")
-                            print(f"OUI: {param.split(':')[1]}")
-                            print("Check your surroundings.")
-                            print()
-                            camera_detected = True
+    # Set a start time
+    start_time = time.time()
 
-    if not camera_detected:  
+    # Set the duration to 1 minute and 45 seconds
+    duration = 105
+
+    while (time.time() - start_time) < duration:
+        for packet in capture.sniff_continuously(timeout=1):
+            if 'wlan_mgt' in packet and 'wlan' in packet:
+                if hasattr(packet.wlan, 'tagged_parameters') and hasattr(packet.wlan_mgt, 'tagged_parameters'):
+                    if packet.wlan_mgt.tagged_parameters:
+                        for param in packet.wlan_mgt.tagged_parameters.split():
+                            if param.startswith('OUI:') and param.split(':')[1].upper() in camera_OUIs:
+                                print("ALERT: Potential camera detected!")
+                                print(f"Name: {camera_OUIs[param.split(':')[1].upper()]}")
+                                print(f"OUI: {param.split(':')[1]}")
+                                print("Check your surroundings.")
+                                print()
+                                camera_detected = True
+
+        if camera_detected:
+            break
+
+        remaining_time = duration - (time.time() - start_time)
+        if remaining_time <= 0:
+            break
+
+        print(f"Time left: {int(remaining_time)} seconds")
+        time.sleep(1)
+
+    if not camera_detected:
         print("No cameras found, you're safe :p")
+
 
 def main():
     global camera_OUIs
@@ -68,6 +88,6 @@ def main():
     interface = 'en0'  # captures on en0 - wifi
     filter_packets(interface)
 
+
 if __name__ == "__main__":
     main()
-
